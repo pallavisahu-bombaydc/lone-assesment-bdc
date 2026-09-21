@@ -2,7 +2,7 @@ export function PrimaryButton({ children, className = '', type = 'button', ...pr
   return (
     <button
       type={type}
-      className={`inline-flex w-full items-center justify-center rounded-xl bg-brand px-5 py-3.5 text-[15px] font-semibold text-white shadow-[0_1px_0_rgb(0_0_0_/_0.2)] transition hover:bg-brand-dark hover:shadow-[0_0_0_2px_#111111] disabled:cursor-not-allowed disabled:bg-brand/40 disabled:shadow-none ${className}`}
+      className={`inline-flex w-full items-center justify-center rounded-xl bg-brand px-5 py-3.5 text-[15px] font-semibold text-white shadow-[0_1px_0_rgb(18_53_43_/_0.25)] transition hover:bg-brand-dark hover:shadow-[0_0_0_2px_#1b4d3e] disabled:cursor-not-allowed disabled:bg-brand/40 disabled:shadow-none ${className}`}
       {...props}
     >
       {children}

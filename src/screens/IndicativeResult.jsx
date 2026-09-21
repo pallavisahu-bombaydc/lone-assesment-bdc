@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
 import { AskAssistantButton } from '../components/AssistantPanel'
-import { PrimaryButton, SecondaryButton } from '../components/Buttons'
 import { Disclaimer } from '../components/Disclaimer'
 import { AlertIcon, CalendarIcon, CheckIcon, PercentIcon, RupeeIcon } from '../components/Icons'
 import { ScoreRing } from '../components/ScoreRing'
@@ -11,7 +10,7 @@ import { ANALYTICS_EVENTS, track } from '../lib/analytics'
 import { getDecision } from '../lib/decision'
 import { estimateEligibility, getReadinessScore } from '../lib/eligibility'
 import { formatINR } from '../lib/format'
-import { DEMO_RATE_PERCENT, getRepaymentPlans } from '../lib/repayment'
+import { DEMO_RATE_PERCENT, examplePrincipal, getRepaymentPlans } from '../lib/repayment'
 
 const STATUS_STYLES = {
   ready: 'bg-ok-soft text-ok',
@@ -40,10 +39,12 @@ const DECISIONS = [
 
 export function IndicativeResult() {
   const navigate = useNavigate()
-  const { profile, readiness, isBusinessComplete, isFinancialComplete, t } = useLoan()
+  const { profile, readiness, isBusinessComplete, isFinancialComplete, setUserIntent, t } = useLoan()
   const [showLogic, setShowLogic] = useState(false)
+  const [showMore, setShowMore] = useState(false)
   const [whatIfRevenue, setWhatIfRevenue] = useState(profile.revenue ?? 0)
   const [whatIfEmi, setWhatIfEmi] = useState(profile.emi ?? 0)
+  const [chosenAmount, setChosenAmount] = useState(0)
 
   useEffect(() => {
     setWhatIfRevenue(profile.revenue ?? 0)
@@ -79,6 +80,15 @@ export function IndicativeResult() {
     }
   }, [isBusinessComplete, isFinancialComplete, estimate.ok, estimate.reason, decision.id])
 
+  useEffect(() => {
+    if (!estimate.ok) return
+    setChosenAmount((current) => {
+      const fallback = examplePrincipal(estimate.min, estimate.max)
+      if (!current) return fallback
+      return Math.min(estimate.max, Math.max(estimate.min, current))
+    })
+  }, [estimate.ok, estimate.min, estimate.max])
+
   if (!isBusinessComplete) {
     return <Navigate to="/check/business" replace />
   }
@@ -108,7 +118,12 @@ export function IndicativeResult() {
       ? 'bg-ok-soft text-ok'
       : 'bg-warn-soft text-warn'
     : 'bg-bad-soft text-bad'
-  const plans = estimate.ok ? getRepaymentPlans(estimate.min, estimate.max) : []
+  const plans = estimate.ok ? getRepaymentPlans(estimate.min, estimate.max, chosenAmount) : []
+  const midAmount = estimate.ok ? examplePrincipal(estimate.min, estimate.max) : 0
+  const amountStep =
+    estimate.ok && estimate.max - estimate.min >= 200000
+      ? 50000
+      : 10000
 
   function handleWhatIf(kind, value) {
     if (kind === 'revenue') setWhatIfRevenue(value)
@@ -147,9 +162,6 @@ export function IndicativeResult() {
                   {formatINR(estimate.min)} – {formatINR(estimate.max)}
                 </p>
                 <p className="mt-3 text-[14px] leading-6 text-muted">{t('result.rangeNote')}</p>
-                <div className="mt-5 h-2 overflow-hidden rounded-full bg-line">
-                  <div className="h-full w-[70%] rounded-full bg-brand" />
-                </div>
                 <div className="mt-5 rounded-xl bg-canvas px-4 py-3">
                   <p className="text-[12px] text-muted">{t('result.surplus')}</p>
                   <p className="mt-1 text-[16px] font-semibold text-ink">
@@ -182,7 +194,51 @@ export function IndicativeResult() {
             <h2 className="text-[16px] font-semibold text-ink">{t('plans.title')}</h2>
           </div>
           <p className="mt-2 text-[14px] leading-6 text-muted">
-            {t('plans.help', { amount: formatINR(plans[0].principal), rate: String(DEMO_RATE_PERCENT) })}
+            {t('plans.chooseHelp', {
+              min: formatINR(estimate.min),
+              max: formatINR(estimate.max),
+              rate: String(DEMO_RATE_PERCENT),
+            })}
+          </p>
+          <div className="mt-4 rounded-xl bg-canvas px-4 py-4">
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <p className="text-[14px] font-medium text-ink">{t('plans.chooseLabel')}</p>
+              <p className="font-serif text-[22px] leading-none text-ink">{formatINR(chosenAmount || midAmount)}</p>
+            </div>
+            {estimate.max > estimate.min ? (
+              <input
+                type="range"
+                min={estimate.min}
+                max={estimate.max}
+                step={amountStep}
+                value={Math.min(estimate.max, Math.max(estimate.min, chosenAmount || midAmount))}
+                onChange={(event) => setChosenAmount(Number(event.target.value))}
+                className="w-full accent-brand"
+              />
+            ) : null}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {[
+                { id: 'min', label: t('plans.chooseMin'), value: estimate.min },
+                { id: 'mid', label: t('plans.chooseMid'), value: midAmount },
+                { id: 'max', label: t('plans.chooseMax'), value: estimate.max },
+              ].map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => setChosenAmount(option.value)}
+                  className={`rounded-full px-3 py-1.5 text-[13px] font-semibold ${
+                    (chosenAmount || midAmount) === option.value
+                      ? 'bg-brand text-white'
+                      : 'border border-line bg-card text-ink hover:border-gold'
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <p className="mt-3 text-[14px] leading-6 text-muted">
+            {t('plans.help', { amount: formatINR(plans[0]?.principal ?? chosenAmount), rate: String(DEMO_RATE_PERCENT) })}
           </p>
           <div className="mt-4 grid gap-3 lg:grid-cols-3">
             {plans.map((plan) => {
@@ -242,50 +298,20 @@ export function IndicativeResult() {
         </section>
       ) : null}
 
-      <section className="mt-6 rounded-[20px] border border-line bg-card p-5 shadow-card">
-        <h2 className="text-[16px] font-semibold text-ink">{t('whatif.title')}</h2>
-        <p className="mt-2 text-[14px] leading-6 text-muted">{t('whatif.help')}</p>
-        <SliderRow
-          label={t('whatif.revenue')}
-          value={whatIfRevenue}
-          min={0}
-          max={revenueMax}
-          step={5000}
-          onChange={(value) => handleWhatIf('revenue', value)}
-        />
-        <SliderRow
-          label={t('whatif.emi')}
-          value={whatIfEmi}
-          min={0}
-          max={emiMax}
-          step={1000}
-          onChange={(value) => handleWhatIf('emi', value)}
-        />
-        {whatIfChanged ? (
-          <button
-            type="button"
-            onClick={() => {
-              setWhatIfRevenue(profile.revenue ?? 0)
-              setWhatIfEmi(profile.emi ?? 0)
-            }}
-            className="mt-3 text-[14px] font-semibold text-gold-dark"
-          >
-            {t('whatif.reset')}
-          </button>
-        ) : null}
-      </section>
-
       <section className="mt-6">
         <h2 className="text-[16px] font-semibold text-ink">{t('decision.title')}</h2>
         <p className="mt-2 text-[14px] leading-6 text-muted">{t(decision.reasonKey)}</p>
-        <div className="mt-4 grid gap-3 lg:grid-cols-3">
-          {DECISIONS.map((item) => {
+        <div className="mt-4 grid gap-3 lg:grid-cols-2">
+          {[
+            DECISIONS.find((item) => item.id === decision.id),
+            ...DECISIONS.filter((item) => item.id !== decision.id),
+          ].map((item) => {
             const suggested = item.id === decision.id
             return (
               <article
                 key={item.id}
                 className={`rounded-[20px] border p-4 ${
-                  suggested ? DECISION_STYLES[item.id] : 'border-line bg-card'
+                  suggested ? `${DECISION_STYLES[item.id]} lg:col-span-2` : 'border-line bg-card'
                 }`}
               >
                 <div className="flex items-center justify-between gap-3">
@@ -299,7 +325,10 @@ export function IndicativeResult() {
                 <p className="mt-2 text-[14px] leading-6 text-muted">{t(item.bodyKey)}</p>
                 <button
                   type="button"
-                  onClick={() => navigate(item.to)}
+                  onClick={() => {
+                    setUserIntent(item.id)
+                    navigate(item.to)
+                  }}
                   className="mt-3 text-[14px] font-semibold text-gold-dark hover:text-ink"
                 >
                   {t(item.ctaKey)} →
@@ -310,85 +339,122 @@ export function IndicativeResult() {
         </div>
       </section>
 
-      <section className="mt-6">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-[14px] font-semibold text-ink">{t('result.inputs')}</h2>
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={() => navigate('/check/business')}
-              className="text-[13px] font-semibold text-gold-dark hover:text-ink"
-            >
-              {t('result.editBusiness')}
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/check/financial')}
-              className="text-[13px] font-semibold text-gold-dark hover:text-ink"
-            >
-              {t('result.editIncome')}
-            </button>
-          </div>
-        </div>
-        <dl className="mt-3 divide-y divide-line rounded-[20px] border border-line bg-card">
-          {profile.loanProduct ? (
-            <InputRow label={t('result.product')} value={t(`product.${profile.loanProduct}`)} />
-          ) : null}
-          <InputRow label={t('result.vintage')} value={t(`vintage.${profile.vintage}`)} />
-          <InputRow
-            label={t('result.revenue')}
-            value={formatINR(profile.revenue, { compact: true })}
-          />
-          <InputRow label={t('result.existingEmi')} value={formatINR(profile.emi ?? 0, { compact: true })} />
-        </dl>
-      </section>
+      <button
+        type="button"
+        onClick={() => setShowMore((open) => !open)}
+        className="mt-6 text-[14px] font-semibold text-gold-dark"
+      >
+        {showMore ? t('result.showLess') : t('result.showMore')}
+      </button>
 
-      <section className="mt-6">
-        <h2 className="text-[14px] font-semibold text-ink">{t('result.readiness')}</h2>
-        <ul className="mt-3 space-y-2">
-          {readiness.map((item) => (
-            <li
-              key={item.id}
-              className="flex items-center justify-between rounded-xl border border-line bg-card px-4 py-3"
-            >
-              <span className="text-[15px] text-ink">{t(`readiness.${item.id}`)}</span>
-              <span
-                className={`rounded-full px-2.5 py-1 text-[12px] font-semibold ${STATUS_STYLES[item.status]}`}
+      {showMore ? (
+        <>
+          <section className="mt-6 rounded-[20px] border border-line bg-card p-5 shadow-card">
+            <h2 className="text-[16px] font-semibold text-ink">{t('whatif.title')}</h2>
+            <p className="mt-2 text-[14px] leading-6 text-muted">{t('whatif.help')}</p>
+            <SliderRow
+              label={t('whatif.revenue')}
+              value={whatIfRevenue}
+              min={0}
+              max={revenueMax}
+              step={5000}
+              onChange={(value) => handleWhatIf('revenue', value)}
+            />
+            <SliderRow
+              label={t('whatif.emi')}
+              value={whatIfEmi}
+              min={0}
+              max={emiMax}
+              step={1000}
+              onChange={(value) => handleWhatIf('emi', value)}
+            />
+            {whatIfChanged ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setWhatIfRevenue(profile.revenue ?? 0)
+                  setWhatIfEmi(profile.emi ?? 0)
+                }}
+                className="mt-3 text-[14px] font-semibold text-gold-dark"
               >
-                {t(`result.status.${item.status}`)}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
+                {t('whatif.reset')}
+              </button>
+            ) : null}
+          </section>
 
-      <div className="mt-6">
-        <button
-          type="button"
-          onClick={() => setShowLogic((open) => !open)}
-          className="text-[14px] font-semibold text-gold-dark"
-        >
-          {t('result.how')}
-        </button>
-        {showLogic ? (
-          <p className="mt-3 rounded-xl bg-canvas px-4 py-3 text-[14px] leading-6 text-muted">
-            {t('result.explainer')}
-          </p>
-        ) : null}
-      </div>
+          <section className="mt-6">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-[14px] font-semibold text-ink">{t('result.inputs')}</h2>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => navigate('/check/business')}
+                  className="text-[13px] font-semibold text-gold-dark hover:text-ink"
+                >
+                  {t('result.editBusiness')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate('/check/financial')}
+                  className="text-[13px] font-semibold text-gold-dark hover:text-ink"
+                >
+                  {t('result.editIncome')}
+                </button>
+              </div>
+            </div>
+            <dl className="mt-3 divide-y divide-line rounded-[20px] border border-line bg-card">
+              {profile.loanProduct ? (
+                <InputRow label={t('result.product')} value={t(`product.${profile.loanProduct}`)} />
+              ) : null}
+              <InputRow label={t('result.vintage')} value={t(`vintage.${profile.vintage}`)} />
+              <InputRow
+                label={t('result.revenue')}
+                value={formatINR(profile.revenue, { compact: true })}
+              />
+              <InputRow label={t('result.existingEmi')} value={formatINR(profile.emi ?? 0, { compact: true })} />
+            </dl>
+          </section>
+
+          <section className="mt-6">
+            <h2 className="text-[14px] font-semibold text-ink">{t('result.readiness')}</h2>
+            <ul className="mt-3 space-y-2">
+              {readiness.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex items-center justify-between rounded-xl border border-line bg-card px-4 py-3"
+                >
+                  <span className="text-[15px] text-ink">{t(`readiness.${item.id}`)}</span>
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-[12px] font-semibold ${STATUS_STYLES[item.status]}`}
+                  >
+                    {t(`result.status.${item.status}`)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <div className="mt-6">
+            <button
+              type="button"
+              onClick={() => setShowLogic((open) => !open)}
+              className="text-[14px] font-semibold text-gold-dark"
+            >
+              {t('result.how')}
+            </button>
+            {showLogic ? (
+              <p className="mt-3 rounded-xl bg-canvas px-4 py-3 text-[14px] leading-6 text-muted">
+                {t('result.explainer')}
+              </p>
+            ) : null}
+          </div>
+        </>
+      ) : null}
 
       <div className="mt-5">
         <AskAssistantButton context="result" questionId="repayment_plans" />
       </div>
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-        <PrimaryButton className="sm:flex-1" onClick={() => navigate('/check/documents')}>
-          {t('result.seeDocs')}
-        </PrimaryButton>
-        <SecondaryButton className="sm:flex-1" onClick={() => navigate('/next-steps')}>
-          {t('result.continueApp')}
-        </SecondaryButton>
-      </div>
       <button
         type="button"
         onClick={() => navigate('/summary')}

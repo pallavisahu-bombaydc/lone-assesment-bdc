@@ -52,11 +52,16 @@ export function calculatePlan(principal, months, annualRate = DEMO_ANNUAL_RATE) 
   }
 }
 
-export function getRepaymentPlans(min, max) {
-  const principal = examplePrincipal(min, max)
+export function getRepaymentPlans(min, max, principal) {
+  const low = Number.isFinite(min) ? min : 0
+  const high = Number.isFinite(max) ? max : low
+  const fallback = examplePrincipal(low, high)
+  const amount = Number.isFinite(principal)
+    ? Math.min(high, Math.max(low, principal))
+    : fallback
   return TENURE_PLANS.map((plan) => ({
     ...plan,
-    ...calculatePlan(principal, plan.months),
+    ...calculatePlan(amount, plan.months),
   }))
 }
 

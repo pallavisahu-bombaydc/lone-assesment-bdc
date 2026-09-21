@@ -43,39 +43,43 @@ export function AssistantPanel() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-5 py-5">
-          <p className="mb-4 text-[14px] leading-6 text-muted">{t('assistant.intro')}</p>
-
-          <div className="flex flex-col gap-2">
-            {questions.map((item) => {
-              const active = item.id === assistantQuestionId
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => setAssistantQuestionId(item.id)}
-                  className={`rounded-xl border px-3.5 py-3 text-left text-[14px] leading-5 transition ${
-                    active
-                      ? 'border-gold bg-gold-soft text-ink'
-                      : 'border-line bg-canvas text-ink hover:border-gold/40'
-                  }`}
-                >
-                  {t(`assistant.${item.id}.q`)}
-                </button>
-              )
-            })}
-          </div>
+        <div className="flex min-h-0 flex-1 flex-col">
+          <p className="shrink-0 px-5 pt-5 text-[14px] leading-6 text-muted">{t('assistant.intro')}</p>
 
           {assistantQuestionId ? (
-            <div className="mt-5 rounded-2xl rounded-tl-sm border border-gold/30 bg-gold-soft p-4">
-              <p className="text-[13px] font-semibold text-ink">
-                {t(`assistant.${assistantQuestionId}.q`)}
-              </p>
-              <p className="mt-2 text-[14px] leading-6 text-muted">
-                {t(`assistant.${assistantQuestionId}.a`)}
-              </p>
+            <div className="shrink-0 border-b border-line bg-card px-5 py-4">
+              <div className="rounded-2xl rounded-tl-sm border border-gold/30 bg-gold-soft p-4">
+                <p className="text-[13px] font-semibold text-ink">
+                  {t(`assistant.${assistantQuestionId}.q`)}
+                </p>
+                <p className="mt-2 text-[14px] leading-6 text-muted">
+                  {t(`assistant.${assistantQuestionId}.a`)}
+                </p>
+              </div>
             </div>
           ) : null}
+
+          <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
+            <div className="flex flex-col gap-2">
+              {questions.map((item) => {
+                const active = item.id === assistantQuestionId
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setAssistantQuestionId(item.id)}
+                    className={`rounded-xl border px-3.5 py-3 text-left text-[14px] leading-5 transition ${
+                      active
+                        ? 'border-gold bg-gold-soft text-ink'
+                        : 'border-line bg-canvas text-ink hover:border-gold/40'
+                    }`}
+                  >
+                    {t(`assistant.${item.id}.q`)}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
         </div>
 
         <div className="border-t border-line px-5 py-4">

@@ -3,16 +3,16 @@
 @theme {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Fraunces", ui-serif, Georgia, serif;
-  --color-brand: #111111;
-  --color-brand-dark: #000000;
-  --color-brand-soft: #f4f4f4;
-  --color-gold: #111111;
-  --color-gold-dark: #111111;
-  --color-gold-soft: #f4f4f4;
-  --color-canvas: #fafafa;
-  --color-ink: #111111;
-  --color-muted: #525252;
-  --color-line: #e5e5e5;
+  --color-brand: #1b4d3e;
+  --color-brand-dark: #12352b;
+  --color-brand-soft: #e4f0ea;
+  --color-gold: #2f6f5b;
+  --color-gold-dark: #1b4d3e;
+  --color-gold-soft: #e4f0ea;
+  --color-canvas: #f5f2ec;
+  --color-ink: #1a211e;
+  --color-muted: #5a635e;
+  --color-line: #d9d3c9;
   --color-card: #ffffff;
   --color-amber: #9a3412;
   --color-amber-soft: #ffedd5;
@@ -22,7 +22,7 @@
   --color-warn-soft: #ffedd5;
   --color-bad: #991b1b;
   --color-bad-soft: #fee2e2;
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.06), 0 10px 24px rgb(0 0 0 / 0.06);
+  --shadow-card: 0 1px 2px rgb(27 77 62 / 0.06), 0 10px 24px rgb(27 77 62 / 0.08);
 }
 
 html {
@@ -43,7 +43,7 @@ body {
 }
 
 ::selection {
-  background: #e5e5e5;
+  background: #c5ddd4;
   color: var(--color-ink);
 }
 

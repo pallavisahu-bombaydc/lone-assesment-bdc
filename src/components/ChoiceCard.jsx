@@ -3,7 +3,7 @@ export function ChoiceCard({ name, value, checked, onChange, children }) {
     <label
       className={`flex min-h-[56px] cursor-pointer items-center rounded-2xl border px-4 py-4 text-[15px] font-medium transition ${
         checked
-          ? 'border-ink bg-brand-soft text-ink shadow-[inset_0_0_0_1px_#111111]'
+          ? 'border-brand bg-brand-soft text-ink shadow-[inset_0_0_0_1px_#1b4d3e]'
           : 'border-line bg-card text-ink hover:border-gold/50'
       }`}
     >

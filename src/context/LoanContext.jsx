@@ -35,6 +35,9 @@ export function LoanProvider({ children }) {
     savedProgress?.applicationStarted ?? false,
   )
   const [application, setApplication] = useState(savedProgress?.application ?? EMPTY_APPLICATION)
+  const [userIntent, setUserIntentState] = useState(
+    ['apply', 'wait', 'talk'].includes(savedProgress?.userIntent) ? savedProgress.userIntent : null,
+  )
 
   useEffect(() => {
     document.documentElement.lang = language === 'hi' ? 'hi' : 'en'
@@ -49,8 +52,9 @@ export function LoanProvider({ children }) {
       lastPath,
       applicationStarted,
       application,
+      userIntent,
     })
-  }, [profile, lead, documentChecks, documentFiles, lastPath, applicationStarted, application])
+  }, [profile, lead, documentChecks, documentFiles, lastPath, applicationStarted, application, userIntent])
 
   const estimate = useMemo(
     () =>
@@ -109,6 +113,7 @@ export function LoanProvider({ children }) {
       assistantQuestionId,
       applicationStarted,
       application,
+      userIntent,
       hasSavedProgress,
       documentTotal,
       documentDone,
@@ -181,7 +186,11 @@ export function LoanProvider({ children }) {
         setAssistantOpen(false)
         setApplicationStarted(false)
         setApplication(EMPTY_APPLICATION)
+        setUserIntentState(null)
         clearProgress()
+      },
+      setUserIntent(next) {
+        setUserIntentState(['apply', 'wait', 'talk'].includes(next) ? next : null)
       },
       openAssistant(context, questionId) {
         setAssistantContext(context)
@@ -258,6 +267,7 @@ export function LoanProvider({ children }) {
       lastPath,
       applicationStarted,
       application,
+      userIntent,
       hasSavedProgress,
       documentTotal,
       documentDone,

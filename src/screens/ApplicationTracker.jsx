@@ -1,8 +1,6 @@
 import { useEffect } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
-import { AskAssistantButton } from '../components/AssistantPanel'
-import { PrimaryButton, SecondaryButton } from '../components/Buttons'
 import { Disclaimer } from '../components/Disclaimer'
 import { useLoan } from '../context/LoanContext'
 import { formatINR } from '../lib/format'
@@ -15,13 +13,11 @@ const OUTCOME_STYLES = {
 }
 
 export function ApplicationTracker() {
-  const navigate = useNavigate()
   const {
     application,
     documentFiles,
     estimate,
     advanceApplication,
-    replayTracking,
     isBusinessComplete,
     isFinancialComplete,
     t,
@@ -44,7 +40,7 @@ export function ApplicationTracker() {
   }
 
   if (!application.submitted) {
-    return <Navigate to="/ready" replace />
+    return <Navigate to="/check/documents" replace />
   }
 
   const decided = application.stepIndex >= TRACK_LAST_STEP && application.outcome
@@ -52,7 +48,7 @@ export function ApplicationTracker() {
   const outcome = application.outcome
 
   return (
-    <AppShell backTo="/ready" backLabel={t('common.backReady')}>
+    <AppShell backTo="/" backLabel={t('common.backHome')}>
       <p className="inline-flex rounded-full bg-gold-soft px-3 py-1 text-[12px] font-semibold text-gold-dark">
         {t('track.demoBadge')}
       </p>
@@ -142,25 +138,6 @@ export function ApplicationTracker() {
       )}
 
       <Disclaimer className="mt-5">{t('track.disclaimer')}</Disclaimer>
-
-      <div className="mt-6">
-        <AskAssistantButton context="track" questionId="live_track" />
-      </div>
-
-      <div className="mt-8 flex max-w-xl flex-col gap-3 sm:flex-row">
-        {application.stepIndex < TRACK_LAST_STEP ? (
-          <PrimaryButton className="sm:flex-1" onClick={advanceApplication}>
-            {t('track.next')}
-          </PrimaryButton>
-        ) : (
-          <PrimaryButton className="sm:flex-1" onClick={replayTracking}>
-            {t('track.replay')}
-          </PrimaryButton>
-        )}
-        <SecondaryButton className="sm:flex-1" onClick={() => navigate('/check/documents')}>
-          {t('track.backDocs')}
-        </SecondaryButton>
-      </div>
     </AppShell>
   )
 }

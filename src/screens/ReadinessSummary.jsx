@@ -31,13 +31,10 @@ export function ReadinessSummary() {
         track(ANALYTICS_EVENTS.SUMMARY_SHARED, { method: 'web_share' })
         return
       } catch {
-        // User cancelled or share failed; show fallbacks.
+        return
       }
     }
-    setNotice('fallback')
-  }
 
-  async function handleCopy() {
     try {
       await navigator.clipboard.writeText(shareText)
       setNotice(t('summary.copied'))
@@ -95,19 +92,9 @@ export function ReadinessSummary() {
       <div className="mt-8 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-2 print:hidden">
         <PrimaryButton onClick={handlePrint}>{t('summary.print')}</PrimaryButton>
         <SecondaryButton onClick={handleShare}>{t('summary.share')}</SecondaryButton>
-        <SecondaryButton onClick={handleCopy}>{t('summary.copy')}</SecondaryButton>
-        <a
-          href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
-          target="_blank"
-          rel="noreferrer"
-          onClick={() => track(ANALYTICS_EVENTS.SUMMARY_SHARED, { method: 'whatsapp' })}
-          className="inline-flex w-full items-center justify-center rounded-xl border border-line bg-card px-5 py-3.5 text-[15px] font-semibold text-ink hover:border-gold"
-        >
-          {t('summary.whatsapp')}
-        </a>
       </div>
 
-      {notice && notice !== 'fallback' ? (
+      {notice ? (
         <p className="mt-4 rounded-xl bg-gold-soft px-4 py-3 text-[14px] text-gold-dark print:hidden">
           {notice}
         </p>

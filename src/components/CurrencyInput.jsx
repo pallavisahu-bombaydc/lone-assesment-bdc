@@ -27,7 +27,7 @@ export function CurrencyInput({
           placeholder={placeholder}
           value={formatINRInput(value)}
           onChange={(event) => onChange(parseDigitsToNumber(event.target.value))}
-          className="w-full bg-transparent py-3.5 text-[16px] text-ink outline-none placeholder:text-[#94a3b8]"
+          className="w-full bg-transparent py-3.5 text-[16px] text-ink outline-none placeholder:text-muted/60"
         />
       </div>
       {error ? <p className="mt-2 text-[13px] text-[#9a3412]">{error}</p> : null}

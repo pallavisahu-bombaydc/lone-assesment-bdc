@@ -14,7 +14,7 @@ export function ScoreRing({ score, label }) {
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="#e5e5e5"
+            stroke="#d9d3c9"
             strokeWidth={stroke}
           />
           <circle
@@ -22,7 +22,7 @@ export function ScoreRing({ score, label }) {
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="#111111"
+            stroke="#1b4d3e"
             strokeWidth={stroke}
             strokeLinecap="round"
             strokeDasharray={circumference}

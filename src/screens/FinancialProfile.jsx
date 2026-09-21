@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
-import { AskAssistantButton } from '../components/AssistantPanel'
 import { PrimaryButton } from '../components/Buttons'
 import { CurrencyInput } from '../components/CurrencyInput'
 import { useLoan } from '../context/LoanContext'
@@ -65,10 +64,6 @@ export function FinancialProfile() {
       </p>
       <h1 className="mt-3 font-serif text-[34px] leading-10 text-ink">{t('financial.title')}</h1>
       <p className="mt-3 text-[15px] leading-6 text-muted">{t('financial.help')}</p>
-
-      <div className="mt-4">
-        <AskAssistantButton context="financial" questionId="variable_income" />
-      </div>
 
       <div className="mt-8 grid gap-5 lg:grid-cols-3">
         <CurrencyInput

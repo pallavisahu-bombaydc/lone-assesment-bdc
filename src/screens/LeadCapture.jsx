@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
-import { PrimaryButton, SecondaryButton } from '../components/Buttons'
+import { PrimaryButton } from '../components/Buttons'
 import { useLoan } from '../context/LoanContext'
 
 export function LeadCapture() {
-  const navigate = useNavigate()
   const { lead, saveLead, isBusinessComplete, isFinancialComplete, t } = useLoan()
   const [form, setForm] = useState({
     name: lead.name,
@@ -59,6 +58,14 @@ export function LeadCapture() {
       <h1 className="mt-3 font-serif text-[34px] leading-10 text-ink">{t('lead.title')}</h1>
       <p className="mt-3 text-[15px] leading-6 text-muted">{t('lead.help')}</p>
 
+      {thanks ? (
+        <div className="mt-6 max-w-xl rounded-2xl border border-ok/30 bg-ok-soft px-5 py-4">
+          <p className="text-[16px] font-semibold text-ok">{t('lead.thanksTitle')}</p>
+          <p className="mt-2 text-[14px] leading-6 text-ink">{t('lead.thanks')}</p>
+          <p className="mt-2 text-[13px] leading-5 text-muted">{t('lead.thanksNote')}</p>
+        </div>
+      ) : null}
+
       <form className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" onSubmit={handleSubmit}>
         <Field
           id="name"
@@ -100,25 +107,6 @@ export function LeadCapture() {
           <PrimaryButton type="submit">{t('lead.submit')}</PrimaryButton>
         </div>
       </form>
-
-      {thanks ? (
-        <p className="mt-4 rounded-xl border border-gold/40 bg-gold-soft px-4 py-3 text-[14px] leading-6 text-gold-dark">
-          {t('lead.thanks')}
-        </p>
-      ) : null}
-
-      <div className="mt-6 flex max-w-sm flex-col gap-3">
-        <SecondaryButton onClick={() => navigate('/check/documents')}>
-          {t('lead.goDocs')}
-        </SecondaryButton>
-        <button
-          type="button"
-          onClick={() => navigate('/check/documents')}
-          className="text-[14px] font-semibold text-muted hover:text-ink"
-        >
-          {t('common.skip')}
-        </button>
-      </div>
     </AppShell>
   )
 }

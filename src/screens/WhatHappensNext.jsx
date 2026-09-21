@@ -1,8 +1,8 @@
 import { Navigate, useNavigate } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
-import { AskAssistantButton } from '../components/AssistantPanel'
 import { PrimaryButton } from '../components/Buttons'
 import { useLoan } from '../context/LoanContext'
+import { getDecision } from '../lib/decision'
 
 const TIMELINE = [
   { titleKey: 'next.s1Title', bodyKey: 'next.s1Body' },
@@ -14,7 +14,8 @@ const TIMELINE = [
 
 export function WhatHappensNext() {
   const navigate = useNavigate()
-  const { isBusinessComplete, isFinancialComplete, application, t } = useLoan()
+  const { isBusinessComplete, isFinancialComplete, application, estimate, profile, userIntent, t } =
+    useLoan()
 
   if (!isBusinessComplete) {
     return <Navigate to="/check/business" replace />
@@ -23,6 +24,16 @@ export function WhatHappensNext() {
   if (!isFinancialComplete) {
     return <Navigate to="/check/financial" replace />
   }
+
+  const canApply =
+    userIntent === 'apply' ||
+    (!userIntent &&
+      getDecision({
+        vintage: profile.vintage,
+        estimate,
+        revenue: profile.revenue,
+        emi: profile.emi,
+      }).id === 'apply')
 
   return (
     <AppShell backTo="/check/documents" backLabel={t('common.backDocuments')}>
@@ -46,20 +57,18 @@ export function WhatHappensNext() {
         ))}
       </ol>
 
-      <div className="mt-6">
-        <AskAssistantButton context="next-steps" questionId="after_apply">
-          {t('common.askQuestions')}
-        </AskAssistantButton>
-      </div>
-
       <div className="mt-8">
         {application.submitted ? (
           <PrimaryButton className="max-w-sm" onClick={() => navigate('/track')}>
             {t('track.nav')}
           </PrimaryButton>
+        ) : canApply ? (
+          <PrimaryButton className="max-w-sm" onClick={() => navigate('/check/documents')}>
+            {t('docs.submitDemo')}
+          </PrimaryButton>
         ) : (
-          <PrimaryButton className="max-w-sm" onClick={() => navigate('/ready')}>
-            {t('common.continue')}
+          <PrimaryButton className="max-w-sm" onClick={() => navigate('/check/result')}>
+            {t('docs.backResult')}
           </PrimaryButton>
         )}
       </div>

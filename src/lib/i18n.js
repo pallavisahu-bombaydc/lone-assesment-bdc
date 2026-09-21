@@ -122,6 +122,8 @@ const COPY = {
     'result.existingEmi': 'Existing EMI',
     'result.readiness': 'Readiness',
     'result.how': 'How is this estimated?',
+    'result.showMore': 'Show what-if and readiness',
+    'result.showLess': 'Show less',
     'result.explainer':
       'This prototype uses simplified demo logic based on business vintage, average monthly surplus (revenue minus expenses and existing EMIs), and basic affordability checks. A real lending decision would use the lender’s approved underwriting and verification process.',
     'result.talkAdvisor': 'Talk to an advisor',
@@ -129,8 +131,14 @@ const COPY = {
     'result.continueApp': 'Continue application',
     'result.shareSummary': 'Share / save summary',
     'plans.title': 'Example monthly plans',
+    'plans.chooseLabel': 'How much would you like to borrow?',
+    'plans.chooseHelp':
+      'Pick an amount between {min} and {max} — the indicative range from this check. EMIs below update for that amount at {rate}% a year in this demo.',
+    'plans.chooseMin': 'Lowest in range',
+    'plans.chooseMid': 'Mid range',
+    'plans.chooseMax': 'Highest in range',
     'plans.help':
-      'If you took about {amount}, here is an example EMI at {rate}% a year in this demo. Pay sooner = higher EMI, less interest.',
+      'Example EMI if you took {amount}. Pay sooner = higher EMI, less interest.',
     'plans.y1': 'Pay in 1 year',
     'plans.y2': 'Pay in 2 years',
     'plans.y3': 'Pay in 3 years',
@@ -183,6 +191,19 @@ const COPY = {
     'docs.removeFile': 'Remove',
     'docs.attachedCount': '{count} attached',
     'docs.submitDemo': 'Submit demo application',
+    'docs.whatNext': 'What happens next',
+    'docs.backResult': 'Back to my result',
+    'docs.waitHelp':
+      'Tick what you already have. Your progress is saved on this device. This is preparation only — not an application.',
+    'docs.confirmTitle': 'Submit this demo application?',
+    'docs.confirmBody':
+      'This is a demo only. Nothing is sent to a lender. After you confirm, you will see a sample application tracker.',
+    'docs.confirmYes': 'Yes, submit',
+    'docs.confirmNo': 'Cancel',
+    'docs.successTitle': 'Application submitted',
+    'docs.successBody':
+      'Your demo application is in. Next you can follow sample status updates — nothing was sent to a lender.',
+    'docs.successNext': 'View tracker',
     'landing.continueSaved': 'Continue where you left off',
     'result.status.ready': 'Ready',
     'result.status.required': 'Required',
@@ -313,7 +334,10 @@ const COPY = {
     'lead.cityRequired': 'Enter your city.',
     'lead.consentRequired': 'Please confirm we may contact you about this check.',
     'lead.submit': 'Request a callback',
-    'lead.thanks': 'We’ll use this only in the demo — no message was sent.',
+    'lead.thanksTitle': 'Callback request sent',
+    'lead.thanks':
+      'An advisor will try to reach you within 1 hour during working hours, or by the next business day.',
+    'lead.thanksNote': 'This is a demo confirmation. No live call is placed from this prototype.',
     'lead.goDocs': 'See my document checklist',
 
     'summary.title': 'Your readiness summary',
@@ -486,6 +510,8 @@ const COPY = {
     'result.existingEmi': 'मौजूदा EMI',
     'result.readiness': 'रेडीनेस',
     'result.how': 'यह अनुमान कैसे बना?',
+    'result.showMore': 'व्हाट-इफ और रेडीनेस देखें',
+    'result.showLess': 'कम दिखाएँ',
     'result.explainer':
       'यह प्रोटोटाइप सरल डेमो लॉजिक इस्तेमाल करता है — व्यवसाय की अवधि, औसत मासिक अधिशेष (आय घटा खर्च और EMI) और बुनियादी सामर्थ्य जाँच। असली लेंडिंग निर्णय लेंडर की स्वीकृत प्रक्रिया से होगा।',
     'result.talkAdvisor': 'सलाहकार से बात करें',
@@ -493,8 +519,14 @@ const COPY = {
     'result.continueApp': 'आवेदन जारी रखें',
     'result.shareSummary': 'सारांश साझा / सेव करें',
     'plans.title': 'उदाहरण मासिक योजनाएँ',
+    'plans.chooseLabel': 'आप कितना उधार लेना चाहेंगे?',
+    'plans.chooseHelp':
+      '{min} से {max} के बीच चुनें — इस जाँच की संकेतात्मक सीमा। नीचे EMI उसी राशि पर, इस डेमो में {rate}% सालाना।',
+    'plans.chooseMin': 'सीमा में सबसे कम',
+    'plans.chooseMid': 'बीच की राशि',
+    'plans.chooseMax': 'सीमा में सबसे ज़्यादा',
     'plans.help':
-      'अगर आप लगभग {amount} लेते, तो इस डेमो में {rate}% सालाना पर EMI कुछ ऐसी हो सकती है। जल्दी चुकाएँ = ज़्यादा EMI, कम ब्याज।',
+      '{amount} लेने पर उदाहरण EMI। जल्दी चुकाएँ = ज़्यादा EMI, कम ब्याज।',
     'plans.y1': '1 साल में चुकाएँ',
     'plans.y2': '2 साल में चुकाएँ',
     'plans.y3': '3 साल में चुकाएँ',
@@ -547,6 +579,19 @@ const COPY = {
     'docs.removeFile': 'हटाएँ',
     'docs.attachedCount': '{count} अटैच',
     'docs.submitDemo': 'डेमो आवेदन जमा करें',
+    'docs.whatNext': 'आगे क्या होता है',
+    'docs.backResult': 'मेरे परिणाम पर वापस जाएँ',
+    'docs.waitHelp':
+      'जो पहले से है उसे टिक करें। प्रगति इसी डिवाइस पर सेव रहती है। यह केवल तैयारी है — आवेदन नहीं।',
+    'docs.confirmTitle': 'यह डेमो आवेदन जमा करें?',
+    'docs.confirmBody':
+      'यह केवल डेमो है। किसी लेंडर को कुछ नहीं जाता। पुष्टि के बाद सैंपल आवेदन ट्रैकर दिखेगा।',
+    'docs.confirmYes': 'हाँ, जमा करें',
+    'docs.confirmNo': 'रद्द करें',
+    'docs.successTitle': 'आवेदन जमा हो गया',
+    'docs.successBody':
+      'आपका डेमो आवेदन दर्ज हो गया है। आगे सैंपल स्टेटस दिखेगा — किसी लेंडर को कुछ नहीं भेजा गया।',
+    'docs.successNext': 'ट्रैकर देखें',
     'landing.continueSaved': 'जहाँ छोड़ा था वहीं से जारी रखें',
     'result.status.ready': 'तैयार',
     'result.status.required': 'ज़रूरी',
@@ -676,7 +721,10 @@ const COPY = {
     'lead.cityRequired': 'अपना शहर लिखें।',
     'lead.consentRequired': 'कृपया पुष्टि करें कि हम आपसे इस चेक के बारे में संपर्क कर सकते हैं।',
     'lead.submit': 'कॉलबैक माँगें',
-    'lead.thanks': 'यह केवल डेमो में इस्तेमाल होगा — कोई संदेश नहीं भेजा गया।',
+    'lead.thanksTitle': 'कॉलबैक अनुरोध भेज दिया गया है',
+    'lead.thanks':
+      'काम के घंटों में 1 घंटे के अंदर, या अगले कार्य दिवस तक सलाहकार आपसे संपर्क करने की कोशिश करेंगे।',
+    'lead.thanksNote': 'यह डेमो पुष्टि है। इस प्रोटोटाइप से असली कॉल नहीं लगती।',
     'lead.goDocs': 'मेरी दस्तावेज़ सूची देखें',
 
     'summary.title': 'आपका रेडीनेस सारांश',

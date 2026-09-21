@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { ClockIcon, EyeIcon, ShieldIcon } from '../components/Icons'
 import { LanguageToggle } from '../components/LanguageToggle'
 import { Logo } from '../components/Logo'
-import { PrimaryButton, SecondaryButton } from '../components/Buttons'
+import { PrimaryButton } from '../components/Buttons'
 import { useLoan } from '../context/LoanContext'
 import { ANALYTICS_EVENTS, track } from '../lib/analytics'
 import { DEMO_PERSONA } from '../lib/constants'
@@ -41,9 +41,6 @@ export function Landing() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
           <Logo light />
           <div className="flex items-center gap-3">
-            <span className="hidden rounded-full bg-white px-3 py-1 text-[12px] font-semibold text-brand sm:inline">
-              {t('landing.minutes')}
-            </span>
             <LanguageToggle />
             {application.submitted ? (
               <button
@@ -74,46 +71,42 @@ export function Landing() {
             <p className="mt-5 max-w-xl text-[17px] leading-7 text-muted">{t('landing.support')}</p>
             <p className="mt-4 max-w-xl text-[15px] leading-6 text-ink/80">{t('landing.principle')}</p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <PrimaryButton className="sm:w-auto" onClick={() => startCheck(false)}>
-                {t('landing.cta')}
-              </PrimaryButton>
-              <SecondaryButton
-                className="sm:w-auto"
-                onClick={() => document.getElementById('how-it-works')?.scrollIntoView()}
-              >
-                {t('common.howItWorks')}
-              </SecondaryButton>
-            </div>
-            {hasSavedProgress ? (
+            <div className="mt-8 flex max-w-md flex-col gap-4">
+              <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+                <PrimaryButton className="w-full sm:w-auto" onClick={() => startCheck(false)}>
+                  {t('landing.cta')}
+                </PrimaryButton>
+                {hasSavedProgress ? (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navigate(
+                        application.submitted
+                          ? '/track'
+                          : lastPath && lastPath !== '/'
+                            ? lastPath
+                            : '/check/business',
+                      )
+                    }
+                    className="text-[14px] font-semibold text-gold-dark hover:text-ink"
+                  >
+                    {application.submitted ? `${t('track.nav')} →` : `${t('landing.continueSaved')} →`}
+                  </button>
+                ) : null}
+              </div>
+
               <button
                 type="button"
-                onClick={() =>
-                  navigate(
-                    application.submitted
-                      ? '/track'
-                      : lastPath && lastPath !== '/'
-                        ? lastPath
-                        : '/check/business',
-                  )
-                }
-                className="mt-4 text-left text-[14px] font-semibold text-gold-dark hover:text-ink"
+                onClick={() => startCheck(true)}
+                className="w-full rounded-2xl border border-line bg-card p-4 text-left shadow-card transition hover:border-gold"
               >
-                {application.submitted ? `${t('track.nav')} →` : `${t('landing.continueSaved')} →`}
+                <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-gold-dark">
+                  {t('landing.demoTitle')}
+                </p>
+                <p className="mt-1 text-[15px] font-semibold text-ink">{DEMO_PERSONA.summary}</p>
+                <p className="mt-1 text-[13px] text-muted">{t('landing.demoHelp')}</p>
               </button>
-            ) : null}
-
-            <button
-              type="button"
-              onClick={() => startCheck(true)}
-              className="mt-6 w-full rounded-2xl border border-line bg-card p-4 text-left shadow-card transition hover:border-gold sm:max-w-md"
-            >
-              <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-gold-dark">
-                {t('landing.demoTitle')}
-              </p>
-              <p className="mt-1 text-[15px] font-semibold text-ink">{DEMO_PERSONA.summary}</p>
-              <p className="mt-1 text-[13px] text-muted">{t('landing.demoHelp')}</p>
-            </button>
+            </div>
           </div>
 
           <aside className="rounded-[20px] border border-line bg-card p-6 shadow-card">
