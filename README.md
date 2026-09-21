@@ -6,6 +6,8 @@ A 3-minute **Loan Readiness Check** for self-employed customers of a mid-sized N
 
 This prototype is **help first, not a loan form**. It shows an indicative range, the documents to keep ready, and what happens next — without claiming guaranteed approval or running a credit enquiry.
 
+**Live demo:** [https://lone-assesment-bdc.vercel.app/](https://lone-assesment-bdc.vercel.app/)
+
 ## The problem
 
 Self-employed users often drop off digital loan journeys because they:
