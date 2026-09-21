@@ -34,7 +34,7 @@ export function AppShell({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-20 bg-brand text-white shadow-[0_8px_24px_rgb(0_0_0_/_0.12)] print:hidden">
+      <header className="sticky top-0 z-20 bg-brand text-white shadow-[0_12px_32px_rgb(18_53_43_/_0.28)] print:hidden">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
           <Logo light />
           <div className="flex items-center gap-3">

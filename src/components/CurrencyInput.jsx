@@ -15,7 +15,7 @@ export function CurrencyInput({
         {label}
       </label>
       <div
-        className={`flex items-center rounded-xl border bg-card px-4 ${
+        className={`flex items-center rounded-2xl border bg-card px-4 shadow-sm ${
           error ? 'border-[#b45309] ring-2 ring-[#b45309]/10' : 'border-line focus-within:border-gold focus-within:ring-2 focus-within:ring-gold/20'
         }`}
       >

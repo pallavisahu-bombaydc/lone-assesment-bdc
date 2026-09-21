@@ -3,9 +3,36 @@ import { useNavigate } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
 import { PrimaryButton } from '../components/Buttons'
 import { ChoiceCard } from '../components/ChoiceCard'
+import {
+  ArrowIcon,
+  BriefcaseIcon,
+  BuildingIcon,
+  FactoryIcon,
+  GridIcon,
+  HammerIcon,
+  HomeIcon,
+  ShopIcon,
+  TruckIcon,
+  UserIcon,
+} from '../components/Icons'
 import { useLoan } from '../context/LoanContext'
 import { ANALYTICS_EVENTS, track } from '../lib/analytics'
 import { BUSINESS_TYPES, LOAN_PRODUCTS, VINTAGE_OPTIONS } from '../lib/constants'
+
+const PRODUCT_ICONS = {
+  business_msme: BuildingIcon,
+  lap: HomeIcon,
+}
+
+const TYPE_ICONS = {
+  shop_owner: ShopIcon,
+  manufacturer: FactoryIcon,
+  contractor: HammerIcon,
+  professional: BriefcaseIcon,
+  freelancer: UserIcon,
+  transporter: TruckIcon,
+  other: GridIcon,
+}
 
 export function BusinessProfile() {
   const navigate = useNavigate()
@@ -43,6 +70,7 @@ export function BusinessProfile() {
               key={option.id}
               name="loanProduct"
               value={option.id}
+              icon={PRODUCT_ICONS[option.id]}
               checked={profile.loanProduct === option.id}
               onChange={() => {
                 setError('')
@@ -64,6 +92,7 @@ export function BusinessProfile() {
               key={option.id}
               name="businessType"
               value={option.id}
+              icon={TYPE_ICONS[option.id]}
               checked={profile.businessType === option.id}
               onChange={() => {
                 setError('')
@@ -101,6 +130,7 @@ export function BusinessProfile() {
       <div className="mt-8">
         <PrimaryButton className="max-w-sm" onClick={handleNext}>
           {t('common.continue')}
+          <ArrowIcon />
         </PrimaryButton>
       </div>
     </AppShell>

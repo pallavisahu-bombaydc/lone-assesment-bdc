@@ -2,7 +2,7 @@ export function PrimaryButton({ children, className = '', type = 'button', ...pr
   return (
     <button
       type={type}
-      className={`inline-flex w-full items-center justify-center rounded-xl bg-brand px-5 py-3.5 text-[15px] font-semibold text-white shadow-[0_1px_0_rgb(18_53_43_/_0.25)] transition hover:bg-brand-dark hover:shadow-[0_0_0_2px_#1b4d3e] disabled:cursor-not-allowed disabled:bg-brand/40 disabled:shadow-none ${className}`}
+      className={`inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-5 py-3.5 text-[15px] font-semibold text-white shadow-[0_8px_20px_rgb(27_77_62_/_0.28)] transition hover:-translate-y-0.5 hover:bg-brand-dark hover:shadow-[0_12px_28px_rgb(27_77_62_/_0.32)] active:translate-y-0 disabled:cursor-not-allowed disabled:bg-brand/40 disabled:shadow-none disabled:hover:translate-y-0 ${className}`}
       {...props}
     >
       {children}
@@ -14,7 +14,7 @@ export function SecondaryButton({ children, className = '', type = 'button', ...
   return (
     <button
       type={type}
-      className={`inline-flex w-full items-center justify-center rounded-xl border border-line bg-card px-5 py-3.5 text-[15px] font-semibold text-ink transition hover:border-gold hover:bg-gold-soft/70 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`inline-flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-card px-5 py-3.5 text-[15px] font-semibold text-ink shadow-sm transition hover:-translate-y-0.5 hover:border-gold hover:bg-gold-soft/70 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 ${className}`}
       {...props}
     >
       {children}
@@ -26,7 +26,7 @@ export function TextButton({ children, className = '', type = 'button', ...props
   return (
     <button
       type={type}
-      className={`text-[14px] font-semibold text-white transition hover:text-gold-soft ${className}`}
+      className={`rounded-lg px-2 py-1 text-[14px] font-semibold text-white/90 transition hover:bg-white/10 hover:text-white ${className}`}
       {...props}
     >
       {children}

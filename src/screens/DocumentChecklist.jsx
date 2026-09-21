@@ -211,7 +211,12 @@ function DocumentGroup({
           const checked = Boolean(checks[item.id])
           const file = files[item.id]
           return (
-            <li key={item.id} className="rounded-[20px] border border-line bg-card p-4 shadow-card">
+            <li
+              key={item.id}
+              className={`rounded-[20px] border p-4 shadow-card transition ${
+                checked ? 'border-ok/40 bg-ok-soft/60' : 'border-line bg-card'
+              }`}
+            >
               <label className="flex cursor-pointer gap-3">
                 <input
                   type="checkbox"

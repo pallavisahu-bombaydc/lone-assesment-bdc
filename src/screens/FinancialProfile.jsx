@@ -5,8 +5,9 @@ import { PrimaryButton } from '../components/Buttons'
 import { CurrencyInput } from '../components/CurrencyInput'
 import { useLoan } from '../context/LoanContext'
 import { ANALYTICS_EVENTS, track } from '../lib/analytics'
-import { formatINR } from '../lib/format'
+import { ArrowIcon } from '../components/Icons'
 import { getCheckRedirect } from '../lib/flow'
+import { formatINR } from '../lib/format'
 
 export function FinancialProfile() {
   const navigate = useNavigate()
@@ -101,12 +102,12 @@ export function FinancialProfile() {
       </div>
 
       {canShowSurplus ? (
-        <div className="mt-5 rounded-2xl border border-line bg-card px-4 py-3 shadow-card">
+        <div className="mt-5 rounded-2xl border border-brand/15 bg-gradient-to-br from-brand-soft to-card px-4 py-4 shadow-card">
           <p className="text-[13px] text-muted">{t('financial.surplus')}</p>
-          <p className={`mt-1 text-[20px] font-semibold ${surplus < 0 ? 'text-[#9a3412]' : 'text-ink'}`}>
+          <p className={`mt-1 font-serif text-[28px] leading-none ${surplus < 0 ? 'text-[#9a3412]' : 'text-ink'}`}>
             {formatINR(surplus)}
           </p>
-          <p className="mt-1 text-[12px] leading-5 text-muted">{t('financial.surplusHelp')}</p>
+          <p className="mt-2 text-[12px] leading-5 text-muted">{t('financial.surplusHelp')}</p>
         </div>
       ) : null}
 
@@ -119,6 +120,7 @@ export function FinancialProfile() {
       <div className="mt-8">
         <PrimaryButton className="max-w-sm" onClick={handleNext}>
           {t('financial.cta')}
+          <ArrowIcon />
         </PrimaryButton>
       </div>
     </AppShell>

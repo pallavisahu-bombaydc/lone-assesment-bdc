@@ -97,7 +97,7 @@ export function AskAssistantButton({ context, questionId, children }) {
     <button
       type="button"
       onClick={() => openAssistant(context, questionId)}
-      className="inline-flex items-center gap-2 rounded-full border border-line bg-card px-3.5 py-2 text-[13px] font-semibold text-gold-dark transition hover:border-gold hover:bg-gold-soft"
+      className="inline-flex items-center gap-2 rounded-full border border-line bg-card px-3.5 py-2 text-[13px] font-semibold text-gold-dark shadow-sm transition hover:-translate-y-0.5 hover:border-gold hover:bg-gold-soft"
     >
       <span className="h-1.5 w-1.5 rounded-full bg-brand" />
       {children || t('common.askAssistant')}

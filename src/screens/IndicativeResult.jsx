@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
 import { AskAssistantButton } from '../components/AssistantPanel'
 import { Disclaimer } from '../components/Disclaimer'
-import { AlertIcon, CalendarIcon, CheckIcon, PercentIcon, RupeeIcon } from '../components/Icons'
+import { AlertIcon, CalendarIcon, ChatIcon, CheckIcon, ClockIcon, PercentIcon, RupeeIcon } from '../components/Icons'
 import { ScoreRing } from '../components/ScoreRing'
 import { useLoan } from '../context/LoanContext'
 import { ANALYTICS_EVENTS, track } from '../lib/analytics'
@@ -21,9 +21,9 @@ const STATUS_STYLES = {
 }
 
 const DECISION_STYLES = {
-  apply: 'border-ok/40 bg-ok-soft shadow-card',
-  wait: 'border-warn/40 bg-warn-soft shadow-card',
-  talk: 'border-line bg-brand-soft shadow-card',
+  apply: 'border-ok/30 bg-ok-soft shadow-card border-l-4 border-l-ok',
+  wait: 'border-warn/30 bg-warn-soft shadow-card border-l-4 border-l-warn',
+  talk: 'border-brand/20 bg-brand-soft shadow-card border-l-4 border-l-brand',
 }
 
 const DECISION_BADGE = {
@@ -33,9 +33,9 @@ const DECISION_BADGE = {
 }
 
 const DECISIONS = [
-  { id: 'apply', titleKey: 'decision.applyTitle', bodyKey: 'decision.applyBody', ctaKey: 'decision.applyCta', to: '/check/documents' },
-  { id: 'wait', titleKey: 'decision.waitTitle', bodyKey: 'decision.waitBody', ctaKey: 'decision.waitCta', to: '/check/documents' },
-  { id: 'talk', titleKey: 'decision.talkTitle', bodyKey: 'decision.talkBody', ctaKey: 'decision.talkCta', to: '/check/lead' },
+  { id: 'apply', titleKey: 'decision.applyTitle', bodyKey: 'decision.applyBody', ctaKey: 'decision.applyCta', to: '/check/documents', icon: CheckIcon },
+  { id: 'wait', titleKey: 'decision.waitTitle', bodyKey: 'decision.waitBody', ctaKey: 'decision.waitCta', to: '/check/documents', icon: ClockIcon },
+  { id: 'talk', titleKey: 'decision.talkTitle', bodyKey: 'decision.talkBody', ctaKey: 'decision.talkCta', to: '/check/lead', icon: ChatIcon },
 ]
 
 export function IndicativeResult() {
@@ -139,7 +139,7 @@ export function IndicativeResult() {
         <h1 className="font-serif text-[34px] leading-10 text-ink">{t('result.title')}</h1>
       </div>
 
-      <div className="mt-6 rounded-[20px] border border-line bg-card p-5 shadow-card sm:p-6">
+      <div className="mt-6 rounded-[24px] border border-line bg-card p-5 shadow-card sm:p-6">
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
           <ScoreRing score={readinessScore.score} label={t(readinessScore.labelKey)} />
           <div className="min-w-0 flex-1">
@@ -158,11 +158,21 @@ export function IndicativeResult() {
                   {formatINR(estimate.min)} – {formatINR(estimate.max)}
                 </p>
                 <p className="mt-3 text-[14px] leading-6 text-muted">{t('result.rangeNote')}</p>
-                <div className="mt-5 rounded-xl bg-canvas px-4 py-3">
-                  <p className="text-[12px] text-muted">{t('result.surplus')}</p>
-                  <p className="mt-1 text-[16px] font-semibold text-ink">
-                    {formatINR(estimate.surplus)}
-                  </p>
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-xl bg-canvas px-4 py-3">
+                    <p className="text-[12px] text-muted">{t('result.surplus')}</p>
+                    <p className="mt-1 text-[16px] font-semibold text-ink">{formatINR(estimate.surplus)}</p>
+                  </div>
+                  <div className="rounded-xl bg-canvas px-4 py-3">
+                    <p className="text-[12px] text-muted">{t('result.vintage')}</p>
+                    <p className="mt-1 text-[16px] font-semibold text-ink">{t(`vintage.${profile.vintage}`)}</p>
+                  </div>
+                  <div className="rounded-xl bg-canvas px-4 py-3">
+                    <p className="text-[12px] text-muted">{t('result.existingEmi')}</p>
+                    <p className="mt-1 text-[16px] font-semibold text-ink">
+                      {formatINR(profile.emi ?? 0, { compact: true })}
+                    </p>
+                  </div>
                 </div>
               </>
             ) : (
@@ -303,6 +313,7 @@ export function IndicativeResult() {
             ...DECISIONS.filter((item) => item.id !== decision.id),
           ].map((item) => {
             const suggested = item.id === decision.id
+            const Icon = item.icon
             return (
               <article
                 key={item.id}
@@ -311,7 +322,16 @@ export function IndicativeResult() {
                 }`}
               >
                 <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-[16px] font-semibold text-ink">{t(item.titleKey)}</h3>
+                  <div className="flex min-w-0 items-center gap-2.5">
+                    <span
+                      className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
+                        suggested ? DECISION_BADGE[item.id] : 'bg-canvas text-brand'
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <h3 className="text-[16px] font-semibold text-ink">{t(item.titleKey)}</h3>
+                  </div>
                   {suggested ? (
                     <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${DECISION_BADGE[item.id]}`}>
                       {t('decision.suggested')}

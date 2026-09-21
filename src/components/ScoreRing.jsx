@@ -8,13 +8,14 @@ export function ScoreRing({ score, label }) {
   return (
     <div className="flex w-[132px] shrink-0 flex-col items-center">
       <div className="relative h-[112px] w-[112px]">
+        <div className="absolute inset-1 rounded-full bg-brand/15 blur-xl" />
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="absolute inset-0 -rotate-90">
           <circle
             cx={size / 2}
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="#d9d3c9"
+            stroke="#e4f0ea"
             strokeWidth={stroke}
           />
           <circle
