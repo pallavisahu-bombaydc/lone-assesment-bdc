@@ -3,6 +3,7 @@ import { AppShell } from '../components/AppShell'
 import { PrimaryButton } from '../components/Buttons'
 import { useLoan } from '../context/LoanContext'
 import { getDecision } from '../lib/decision'
+import { getCheckRedirect } from '../lib/flow'
 
 const TIMELINE = [
   { titleKey: 'next.s1Title', bodyKey: 'next.s1Body' },
@@ -14,16 +15,10 @@ const TIMELINE = [
 
 export function WhatHappensNext() {
   const navigate = useNavigate()
-  const { isBusinessComplete, isFinancialComplete, application, estimate, profile, userIntent, t } =
-    useLoan()
+  const { application, estimate, profile, userIntent, t } = useLoan()
 
-  if (!isBusinessComplete) {
-    return <Navigate to="/check/business" replace />
-  }
-
-  if (!isFinancialComplete) {
-    return <Navigate to="/check/financial" replace />
-  }
+  const redirect = getCheckRedirect(profile, { requireFinancial: true })
+  if (redirect) return <Navigate to={redirect} replace />
 
   const canApply =
     userIntent === 'apply' ||

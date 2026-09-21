@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
 import { Disclaimer } from '../components/Disclaimer'
 import { useLoan } from '../context/LoanContext'
+import { getCheckRedirect } from '../lib/flow'
 import { formatINR } from '../lib/format'
 import { TRACK_INTERVAL_MS, TRACK_LAST_STEP, TRACK_STEPS, getStepState } from '../lib/tracking'
 
@@ -18,8 +19,7 @@ export function ApplicationTracker() {
     documentFiles,
     estimate,
     advanceApplication,
-    isBusinessComplete,
-    isFinancialComplete,
+    profile,
     t,
   } = useLoan()
 
@@ -31,13 +31,8 @@ export function ApplicationTracker() {
     return () => window.clearInterval(timer)
   }, [application.submitted, application.stepIndex, advanceApplication])
 
-  if (!isBusinessComplete) {
-    return <Navigate to="/check/business" replace />
-  }
-
-  if (!isFinancialComplete) {
-    return <Navigate to="/check/financial" replace />
-  }
+  const redirect = getCheckRedirect(profile, { requireFinancial: true })
+  if (redirect) return <Navigate to={redirect} replace />
 
   if (!application.submitted) {
     return <Navigate to="/check/documents" replace />

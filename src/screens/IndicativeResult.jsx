@@ -8,6 +8,7 @@ import { ScoreRing } from '../components/ScoreRing'
 import { useLoan } from '../context/LoanContext'
 import { ANALYTICS_EVENTS, track } from '../lib/analytics'
 import { getDecision } from '../lib/decision'
+import { getCheckRedirect } from '../lib/flow'
 import { estimateEligibility, getReadinessScore } from '../lib/eligibility'
 import { formatINR } from '../lib/format'
 import { DEMO_RATE_PERCENT, examplePrincipal, getRepaymentPlans } from '../lib/repayment'
@@ -89,13 +90,8 @@ export function IndicativeResult() {
     })
   }, [estimate.ok, estimate.min, estimate.max])
 
-  if (!isBusinessComplete) {
-    return <Navigate to="/check/business" replace />
-  }
-
-  if (!isFinancialComplete) {
-    return <Navigate to="/check/financial" replace />
-  }
+  const redirect = getCheckRedirect(profile, { requireFinancial: true })
+  if (redirect) return <Navigate to={redirect} replace />
 
   const readinessScore = getReadinessScore({
     vintage: profile.vintage,

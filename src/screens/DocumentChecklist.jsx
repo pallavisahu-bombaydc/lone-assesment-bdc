@@ -7,6 +7,7 @@ import { DocumentIcon, CheckIcon } from '../components/Icons'
 import { useLoan } from '../context/LoanContext'
 import { ANALYTICS_EVENTS, track } from '../lib/analytics'
 import { getDecision } from '../lib/decision'
+import { getCheckRedirect } from '../lib/flow'
 
 const PHASE_KEYS = {
   today: 'docs.today',
@@ -57,13 +58,8 @@ export function DocumentChecklist() {
     return () => window.clearTimeout(timer)
   }, [submitSuccess, navigate])
 
-  if (!isBusinessComplete) {
-    return <Navigate to="/check/business" replace />
-  }
-
-  if (!isFinancialComplete) {
-    return <Navigate to="/check/financial" replace />
-  }
+  const redirect = getCheckRedirect(profile, { requireFinancial: true })
+  if (redirect) return <Navigate to={redirect} replace />
 
   function handleSubmit() {
     setConfirmOpen(true)

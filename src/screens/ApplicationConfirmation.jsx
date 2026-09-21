@@ -4,6 +4,7 @@ import { PrimaryButton, SecondaryButton } from '../components/Buttons'
 import { CheckIcon } from '../components/Icons'
 import { Disclaimer } from '../components/Disclaimer'
 import { useLoan } from '../context/LoanContext'
+import { getCheckRedirect } from '../lib/flow'
 import { formatINR } from '../lib/format'
 
 export function ApplicationConfirmation() {
@@ -17,18 +18,12 @@ export function ApplicationConfirmation() {
     documentFiles,
     markApplicationStarted,
     submitApplication,
-    isBusinessComplete,
-    isFinancialComplete,
+    profile,
     t,
   } = useLoan()
 
-  if (!isBusinessComplete) {
-    return <Navigate to="/check/business" replace />
-  }
-
-  if (!isFinancialComplete) {
-    return <Navigate to="/check/financial" replace />
-  }
+  const redirect = getCheckRedirect(profile, { requireFinancial: true })
+  if (redirect) return <Navigate to={redirect} replace />
 
   const documentCount = documents.requiredNow.length + documents.later.length
   const attachedCount = Object.keys(documentFiles).length

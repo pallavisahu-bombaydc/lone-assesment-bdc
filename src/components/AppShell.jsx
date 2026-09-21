@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useLoan } from '../context/LoanContext'
 import { DEMO_PERSONA } from '../lib/constants'
+import { isSessionEmpty } from '../lib/flow'
 import { LanguageToggle } from './LanguageToggle'
 import { Logo } from './Logo'
 import { ProgressBar } from './ProgressBar'
@@ -22,14 +23,13 @@ export function AppShell({
   const { reset, profile, t, setLastPath, application } = useLoan()
 
   useEffect(() => {
-    if (location.pathname !== '/') {
-      setLastPath(location.pathname)
-    }
-  }, [location.pathname, setLastPath])
+    if (location.pathname === '/' || isSessionEmpty(profile)) return
+    setLastPath(location.pathname)
+  }, [location.pathname, profile, setLastPath])
 
   function handleRestart() {
     reset()
-    navigate('/')
+    navigate('/', { replace: true })
   }
 
   return (

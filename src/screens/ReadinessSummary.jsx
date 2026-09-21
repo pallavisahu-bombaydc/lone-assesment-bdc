@@ -4,21 +4,17 @@ import { AppShell } from '../components/AppShell'
 import { PrimaryButton, SecondaryButton } from '../components/Buttons'
 import { useLoan } from '../context/LoanContext'
 import { ANALYTICS_EVENTS, track } from '../lib/analytics'
+import { getCheckRedirect } from '../lib/flow'
 import { formatINR } from '../lib/format'
 import { getRepaymentPlans } from '../lib/repayment'
 import { buildShareText } from '../lib/summary'
 
 export function ReadinessSummary() {
-  const { estimate, documents, lead, isBusinessComplete, isFinancialComplete, t } = useLoan()
+  const { estimate, documents, lead, profile, t } = useLoan()
   const [notice, setNotice] = useState('')
 
-  if (!isBusinessComplete) {
-    return <Navigate to="/check/business" replace />
-  }
-
-  if (!isFinancialComplete) {
-    return <Navigate to="/check/financial" replace />
-  }
+  const redirect = getCheckRedirect(profile, { requireFinancial: true })
+  if (redirect) return <Navigate to={redirect} replace />
 
   const allDocs = [...documents.requiredNow, ...documents.later]
   const shareText = buildShareText(t, { estimate, documents })

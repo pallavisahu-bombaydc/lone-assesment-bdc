@@ -6,15 +6,15 @@ import { CurrencyInput } from '../components/CurrencyInput'
 import { useLoan } from '../context/LoanContext'
 import { ANALYTICS_EVENTS, track } from '../lib/analytics'
 import { formatINR } from '../lib/format'
+import { getCheckRedirect } from '../lib/flow'
 
 export function FinancialProfile() {
   const navigate = useNavigate()
-  const { profile, updateProfile, isBusinessComplete, t } = useLoan()
+  const { profile, updateProfile, t } = useLoan()
   const [errors, setErrors] = useState({})
 
-  if (!isBusinessComplete) {
-    return <Navigate to="/check/business" replace />
-  }
+  const redirect = getCheckRedirect(profile)
+  if (redirect) return <Navigate to={redirect} replace />
 
   function validate() {
     const next = {}

@@ -3,9 +3,10 @@ import { Navigate } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
 import { PrimaryButton } from '../components/Buttons'
 import { useLoan } from '../context/LoanContext'
+import { getCheckRedirect } from '../lib/flow'
 
 export function LeadCapture() {
-  const { lead, saveLead, isBusinessComplete, isFinancialComplete, t } = useLoan()
+  const { lead, saveLead, profile, t } = useLoan()
   const [form, setForm] = useState({
     name: lead.name,
     mobile: lead.mobile,
@@ -15,13 +16,8 @@ export function LeadCapture() {
   const [errors, setErrors] = useState({})
   const [thanks, setThanks] = useState(lead.submitted)
 
-  if (!isBusinessComplete) {
-    return <Navigate to="/check/business" replace />
-  }
-
-  if (!isFinancialComplete) {
-    return <Navigate to="/check/financial" replace />
-  }
+  const redirect = getCheckRedirect(profile, { requireFinancial: true })
+  if (redirect) return <Navigate to={redirect} replace />
 
   function updateField(field, value) {
     setForm((current) => ({ ...current, [field]: value }))
